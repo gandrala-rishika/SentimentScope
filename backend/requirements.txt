@@ -1,0 +1,16 @@
+fastapi[all]
+motor
+python-dotenv
+pandas
+torch
+transformers
+emoji
+textblob
+deep-translator
+scikit-learn==1.6.1
+vaderSentiment
+nltk
+openai
+requests
+playwright
+playwright-stealth
