@@ -109,8 +109,6 @@ yarn start
 - **Video:** YouTube (Videos, Shorts)
 - **Shopping:** Amazon, Flipkart
 
-**Proxy Configuration (Optional):**
-- `PROXY_SERVER`, `PROXY_USERNAME`, `PROXY_PASSWORD` can be set in `.env` for scraping via a proxy.
 
 ## License
 
