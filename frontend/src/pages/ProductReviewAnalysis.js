@@ -185,7 +185,7 @@ const ProductReviewAnalysis = () => {
                       <Package className="absolute left-3 top-3 text-[#64748B] w-5 h-5" />
                       <input
                         type="url"
-                        placeholder="Paste Amazon, Flipkart, Meesho link..."
+                        placeholder="Paste Amazon or Flipkart link..."
                         value={productUrl}
                         onChange={(e) => setProductUrl(e.target.value)}
                         className="w-full pl-10 pr-4 py-3 rounded-md border border-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-[#002FA7]"
@@ -197,7 +197,6 @@ const ProductReviewAnalysis = () => {
                       <ul className="list-disc list-inside space-y-1">
                         <li>Amazon</li>
                         <li>Flipkart</li>
-                        <li>Meesho</li>
                       </ul>
                     </div>
                     <Button
@@ -280,13 +279,15 @@ function SingleResult({ data }) {
         <div>
           <h3 className="text-sm font-semibold text-[#0A0A0A] mb-3">Sentiment Scores</h3>
           {Object.entries(scores)
-            .filter(([sentiment]) => sentiment !== 'neutral')
-            .map(([sentiment, score]) => {
+            .filter(([s]) => s !== 'neutral')
+            .map(([s, score]) => {
               const numericScore = Number(score) || 0;
+              const scoreKey = s.charAt(0).toUpperCase() + s.slice(1);
+              const barColor = sentimentColors[scoreKey] || '#ccc';
               return (
-                <div key={sentiment} className="mb-2">
+                <div key={s} className="mb-2">
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="capitalize text-[#64748B]">{sentiment}</span>
+                    <span className="capitalize text-[#64748B]">{s}</span>
                     <span className="font-medium text-[#0A0A0A]">{(numericScore * 100).toFixed(1)}%</span>
                   </div>
                   <div className="h-2 bg-[#F1F5F9] rounded-full overflow-hidden">
@@ -294,7 +295,7 @@ function SingleResult({ data }) {
                       className="h-full transition-all duration-500"
                       style={{
                         width: `${numericScore * 100}%`,
-                        backgroundColor: sentimentColors[sentiment] || '#ccc'
+                        backgroundColor: barColor
                       }}
                     />
                   </div>

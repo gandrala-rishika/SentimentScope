@@ -218,9 +218,8 @@ def scrape_youtube_sync(url: str) -> dict:
             
             url_lower = url.lower()
             is_shorts = "shorts" in url_lower
-            is_instagram = "instagram.com" in url_lower or "instagr.am" in url_lower
             is_youtube = "youtube.com" in url_lower or "youtu.be" in url_lower
-            is_amazon = "amazon." in url_lower
+            is_amazon = "amazon." in url_lower or "amzn." in url_lower
             is_flipkart = "flipkart." in url_lower
 
             if "youtu.be" in url_lower:
@@ -230,12 +229,6 @@ def scrape_youtube_sync(url: str) -> dict:
                 clean_url = url
             else:
                 clean_url = url
-            
-            if is_instagram:
-                if "www.instagram.com" in clean_url:
-                    pass
-                else:
-                    clean_url = clean_url.replace("instagram.com", "www.instagram.com")
 
             logger.info(f"Attempting to scrape URL: {clean_url}")
             
@@ -304,104 +297,6 @@ def scrape_youtube_sync(url: str) -> dict:
                     target_count=100
                 )
 
-            elif is_instagram:
-                logger.info("Instagram detected.")
-                try:
-                    dialog = page.locator("div[role='dialog']")
-                    if dialog.is_visible(timeout=2000):
-                        logger.info("Detected dialog/modal. Attempting to close.")
-                        close_btn = dialog.locator("svg[aria-label='Close'], button[aria-label='Close']").first
-                        if close_btn.is_visible(timeout=1000):
-                            close_btn.click()
-                            random_delay(1, 2)
-                        else:
-                            page.keyboard.press("Escape")
-                            random_delay(1, 2)
-                except Exception as e:
-                    logger.info(f"Dialog handling check: {e}")
-                if "login" in page.url:
-                    logger.error("Redirected to login page. Cannot scrape.")
-                    browser.close()
-                    return {
-                        "title": "Login Required",
-                        "description": "Instagram redirected to login.",
-                        "comments": []
-                    }
-                if "/p/" not in page.url and "/reel/" not in page.url and "/tv/" not in page.url:
-                    logger.error(f"Redirected away from post. Current URL: {page.url}")
-                    browser.close()
-                    return {
-                        "title": "Redirected",
-                        "description": "Could not access specific post.",
-                        "comments": []
-                    }
-                try:
-                    allow_cookies_btn = page.locator("button:has-text('Allow essential cookies'), button:has-text('Accept All')")
-                    if allow_cookies_btn.is_visible(timeout=2000):
-                        allow_cookies_btn.click()
-                        random_delay(1, 2)
-                except:
-                    pass
-
-                try:
-                    not_now_btn = page.get_by_role("button", name="Not now")
-                    if not_now_btn.is_visible(timeout=1000):
-                        not_now_btn.click()
-                        random_delay(1, 2)
-                except:
-                    pass
-
-                username = "Unknown User"
-                try:
-                    username_el = page.locator("article header a").first
-                    if username_el:
-                        username = username_el.inner_text()
-                except:
-                    pass
-                
-                caption_text = ""
-                try:
-                    caption_el = page.locator("article ul li:first-child span[dir='auto'], article h1").first
-                    if caption_el:
-                        caption_text = caption_el.inner_text()
-                except:
-                    pass
-                
-                title = f"{username}: {caption_text}"
-
-                try:
-                    view_comments_btn = page.locator("button:has-text('View all'), a:has-text('View all')")
-                    if view_comments_btn.is_visible(timeout=3000):
-                        view_comments_btn.click()
-                        logger.info("Clicked 'View all' comments.")
-                        random_delay(2, 3)
-                except:
-                    pass
-
-                comments = scroll_and_collect(
-                    page, 
-                    "article ul > ul li span[dir='auto'], article ul > li span[dir='auto']", 
-                    max_scrolls=30,
-                    target_count=100
-                )
-
-                if not comments:
-                    logger.warning("Primary selector failed, trying fallback.")
-                    comments = scroll_and_collect(
-                        page, 
-                        "article ul > li", 
-                        max_scrolls=10,
-                        target_count=100
-                    )
-
-                if not comments:
-                    logger.error("Still found 0 comments. Taking screenshot.")
-                    try:
-                        page.screenshot(path="instagram_empty_debug.png")
-                        logger.info("Saved screenshot to instagram_empty_debug.png")
-                    except:
-                        pass
-
             elif is_amazon:
                 logger.info("Amazon detected.")
                 comments = scroll_and_collect(
@@ -415,7 +310,7 @@ def scrape_youtube_sync(url: str) -> dict:
                 logger.info("Flipkart detected.")
                 comments = scroll_and_collect(
                     page, 
-                    "div._27M-vq", 
+                    "div.t-ZTKy, div._27M-vq", 
                     max_scrolls=20,
                     target_count=100
                 )
@@ -443,7 +338,7 @@ def scrape_youtube_sync(url: str) -> dict:
         return None
 
 async def fetch_content_from_url(url: str) -> dict:
-    if "youtube.com" in url or "youtu.be" in url or "instagram.com" in url or "instagr.am" in url or "amazon" in url or "flipkart" in url:
+    if "youtube.com" in url or "youtu.be" in url or "amazon" in url or "amzn." in url or "flipkart" in url:
         logger.info(f"Using Threaded Playwright to scrape: {url}")
         loop = asyncio.get_running_loop()
         

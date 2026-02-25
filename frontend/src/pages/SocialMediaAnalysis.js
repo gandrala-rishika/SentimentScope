@@ -180,7 +180,7 @@ const SocialMediaAnalysis = () => {
                       <Video className="absolute left-3 top-3 text-[#64748B] w-5 h-5" />
                       <input
                         type="url"
-                        placeholder="Paste YouTube or Instagram link..."
+                        placeholder="Paste YouTube link..."
                         value={videoUrl}
                         onChange={(e) => setVideoUrl(e.target.value)}
                         className="w-full pl-10 pr-4 py-3 rounded-md border border-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-[#002FA7]"
@@ -191,7 +191,6 @@ const SocialMediaAnalysis = () => {
                       <p className="flex items-center gap-2 mb-1"><Link2 className="w-4 h-4" /> Supported Platforms:</p>
                       <ul className="list-disc list-inside space-y-1">
                         <li>YouTube (Videos, Shorts)</li>
-                        <li>Instagram (Reels, Posts)</li>
                       </ul>
                     </div>
                     <Button
@@ -277,6 +276,8 @@ function SingleResult({ data }) {
             .filter(([s]) => s !== 'neutral')
             .map(([s, score]) => {
               const numericScore = Number(score) || 0;
+              const scoreKey = s.charAt(0).toUpperCase() + s.slice(1);
+              const barColor = sentimentColors[scoreKey] || '#ccc';
               return (
                 <div key={s} className="mb-2">
                   <div className="flex justify-between text-sm mb-1">
@@ -288,7 +289,7 @@ function SingleResult({ data }) {
                       className="h-full transition-all duration-500"
                       style={{
                         width: `${numericScore * 100}%`,
-                        backgroundColor: sentimentColors[sentiment] || '#ccc'
+                        backgroundColor: barColor
                       }}
                     />
                   </div>
