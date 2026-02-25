@@ -109,8 +109,23 @@ yarn start
 - **Video:** YouTube (Videos, Shorts)
 - **Shopping:** Amazon, Flipkart
 
-**Proxy Configuration (Optional):**
-- `PROXY_SERVER`, `PROXY_USERNAME`, `PROXY_PASSWORD` can be set in `.env` for scraping via a proxy.
+## Model Training
+
+For training the model, we used the following resources:
+
+**Training Notebook:**
+- [SentimentScope Training Notebook](https://www.kaggle.com/code/eswarvutukuri/sentimentscope)
+
+**Datasets Used:**
+- [Amazon Reviews](https://www.kaggle.com/datasets/bittlingmayer/amazonreviews)
+- [Sentiment Analysis on Financial Tweets](https://www.kaggle.com/datasets/vivekrathi055/sentiment-analysis-on-financial-tweets)
+- [Sentiment140](https://www.kaggle.com/datasets/kazanova/sentiment140)
+
+**Post-Training Setup:**
+Once the model is trained, you will obtain a `baseline_model.pkl` file and a `distilbert_sentiment` folder. To use them in the application:
+1. Download these artifacts.
+2. Create a folder named `models` inside the `backend` directory.
+3. Place both the `baseline_model.pkl` file and the `distilbert_sentiment` folder into `backend/models/`.
 
 ## License
 
