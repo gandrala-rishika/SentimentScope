@@ -127,6 +127,10 @@ Once the model is trained, you will obtain a `baseline_model.pkl` file and a `di
 2. Create a folder named `models` inside the `backend` directory.
 3. Place both the `baseline_model.pkl` file and the `distilbert_sentiment` folder into `backend/models/`.
 
+## Model Testing
+
+You can test the trained models directly on Kaggle using the [SentimentScope Model Testing Notebook](https://www.kaggle.com/code/eswarvutukuri/sentimentscope-model-testing). Once downloading the models zip, you can add them as input in this notebook and run it to see its accuracy.
+
 ## License
 
 This project is licensed under the **MIT License** — see the [LICENSE](./LICENSE) file for details.
